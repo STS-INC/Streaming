@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>STS Streaming Services</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body{
+    margin:0;
+    font-family:"Segoe UI", Arial, sans-serif;
+    color:white;
+
+    background:
+    radial-gradient(circle at 20% 30%, rgba(255,0,0,0.25), transparent 40%),
+    radial-gradient(circle at 80% 20%, rgba(255,0,0,0.18), transparent 40%),
+    radial-gradient(circle at 60% 80%, rgba(255,0,0,0.20), transparent 40%),
+    linear-gradient(180deg,#020617,#020617,#020617);
+}
+
+/* HEADER */
+
+.header{
+    text-align:center;
+    padding-top:35px;
+}
+
+.header h1{
+    font-size:28px;
+    letter-spacing:4px;
+    margin-bottom:18px;
+}
+
+.header img{
+    height:80px;
+}
+
+/* LOGIN */
+
+.container{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:70vh;
+}
+
+.login-box{
+    background:rgba(15,23,42,0.75);
+    backdrop-filter:blur(14px);
+    border:1px solid #1f2937;
+    padding:38px;
+    border-radius:16px;
+    width:360px;
+    box-shadow:
+    0 10px 40px rgba(0,0,0,0.8),
+    0 0 40px rgba(255,0,0,0.12);
+}
+
+/* INPUTS */
+
+input{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border-radius:8px;
+    border:1px solid #1f2937;
+    background:#020617;
+    color:white;
+}
+
+input:focus{
+    outline:none;
+    border:1px solid #ef4444;
+}
+
+/* BUTTONS */
+
+button{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border:none;
+    border-radius:8px;
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+}
+
+button:hover{
+    box-shadow:0 0 20px rgba(59,130,246,0.6);
+}
+
+hr{
+    border:1px solid #1f2937;
+    margin:25px 0;
+}
+
+/* DASHBOARD GRID */
+
+.dashboard{
+    padding:40px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:28px;
+    max-width:1500px;
+    margin:auto;
+}
+
+/* WORKSTATION CARD */
+
+.card{
+
+    background:rgba(17,24,39,0.9);
+
+    border-radius:18px;
+
+    padding:28px;
+
+    text-align:center;
+
+    border:1px solid #b91c1c;   /* RED BORDER */
+
+    backdrop-filter:blur(8px);
+
+    transition:all 0.25s ease;
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,0.6),
+    0 0 10px rgba(185,28,28,0.25);
+
+}
+
+.card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:
+    0 20px 40px rgba(0,0,0,0.9),
+    0 0 20px rgba(185,28,28,0.45);
+
+}
+
+.card h2{
+
+    font-size:20px;
+
+    margin-bottom:18px;
+
+    letter-spacing:1px;
+
+}
+
+/* BUTTON BASE */
+
+.feed-btn{
+
+    display:block;
+
+    margin:10px auto;
+
+    padding:12px 18px;
+
+    border-radius:10px;
+
+    width:150px;
+
+    font-weight:600;
+
+    text-decoration:none;
+
+    transition:all 0.2s;
+
+    color:black;     /* TEXT BLACK */
+
+}
+
+/* LIVE BUTTON (LIGHT RED) */
+
+.live{
+
+    background:#ef4444;
+
+    border:1px solid #f87171;
+
+}
+
+.live:hover{
+
+    background:#f87171;
+
+    box-shadow:0 0 15px rgba(248,113,113,0.6);
+
+}
+
+/* QUAD BUTTON (DARK RED) */
+
+.quad{
+
+    background:#7f1d1d;
+
+    border:1px solid #b91c1c;
+
+}
+
+.quad:hover{
+
+    background:#991b1b;
+
+    box-shadow:0 0 15px rgba(185,28,28,0.6);
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div class="header">
+<h1>STS STREAMING SERVICES</h1>
+<img src="sportec.png">
+</div>
+
+
+<!-- LOGIN -->
+
+<div id="loginPage" class="container">
+
+<div class="login-box">
+
+<h3>Company Login</h3>
+
+<input type="email" id="email" placeholder="Company Email">
+
+<input type="password" id="companyPass" placeholder="Passcode">
+
+<button onclick="companyLogin()">Login</button>
+
+<hr>
+
+<h3>Guest Access</h3>
+
+<input type="password" id="guestCode" placeholder="Access Code">
+
+<button onclick="guestLogin()">Enter</button>
+
+</div>
+
+</div>
+
+
+<!-- DASHBOARD -->
+
+<div id="dashboard" style="display:none;" class="dashboard"></div>
+
+
+
+<script>
+
+const COMPANY_DOMAIN = "@sportec-solutions.com";
+const COMPANY_PASSCODE = "STS2026";
+const GUEST_CODE = "GUEST2026";
+
+function companyLogin(){
+
+let email = document.getElementById("email").value;
+let pass = document.getElementById("companyPass").value;
+
+if(email.endsWith(COMPANY_DOMAIN) && pass === COMPANY_PASSCODE){
+
+sessionStorage.setItem("loggedIn","true");
+
+loadDashboard();
+
+}else{
+
+alert("Invalid company credentials");
+
+}
+
+}
+
+function guestLogin(){
+
+let code = document.getElementById("guestCode").value;
+
+if(code === GUEST_CODE){
+
+sessionStorage.setItem("loggedIn","true");
+
+loadDashboard();
+
+}else{
+
+alert("Invalid guest code");
+
+}
+
+}
+
+function loadDashboard(){
+
+document.getElementById("loginPage").style.display="none";
+
+let dashboard = document.getElementById("dashboard");
+
+dashboard.style.display="grid";
+
+for(let i=1;i<=15;i++){
+
+let card = `
+<div class="card">
+
+<h2>Workstation ${i}</h2>
+
+<a class="feed-btn live" target="_blank"
+href="http://65.56.121.5:4561/workstation${i}live">
+LIVE FEED
+</a>
+
+<a class="feed-btn quad" target="_blank"
+href="http://65.56.121.5:4561/workstation${i}quad">
+QUAD FEED
+</a>
+
+</div>
+`;
+
+dashboard.innerHTML += card;
+
+}
+
+}
+
+if(sessionStorage.getItem("loggedIn")==="true"){
+loadDashboard();
+}
+
+</script>
+
+
+</body>
+</html>
